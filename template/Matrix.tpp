@@ -2,6 +2,25 @@
 #include "../include/Error.hpp"
 
 template <typename T>
+template <typename U>
+Matrix<T>::Matrix(const Matrix<U>& matrix)
+{
+	_nbrLines = matrix.getNbrLines();
+	_nbrColumns = matrix.getNbrColumns();
+	_matrix = std::vector<std::vector<T>>(_nbrLines, std::vector<T>(_nbrColumns));
+	for (size_t i = 0 ; i < _nbrLines ; i++)
+	{
+		for (size_t j = 0 ; j < _nbrColumns ; j++)
+		{
+			if constexpr (std::is_same<U, Complex>::value && !std::is_same<T, Complex>::value)
+				_matrix[i][j] = matrix[i][j].getRealPart();
+			else
+				_matrix[i][j] = matrix[i][j];
+		}
+	}
+}
+
+template <typename T>
 Matrix<T>::Matrix(const std::initializer_list<std::initializer_list<T>>& list)
 {
 	for (const auto data : list)
@@ -132,7 +151,47 @@ Matrix<T>	Matrix<T>::operator*(const Matrix<T>& matrix) const
 	for (size_t i = 0 ; i < result._nbrLines ; i++)
 	{
 		for (size_t j = 0 ; j < result._nbrColumns ; j++)
-			result[i][j] = dotProduct(Vector<T>(getLine(i)), Vector<T>(matrix.getColumn(j)));
+			result[i][j] = dotProduct<T>(Vector<T>(getLine(i)), Vector<T>(matrix.getColumn(j)));
 	}
 	return result;
+}
+
+template <typename T>
+Matrix<T>&	Matrix<T>::operator*=(const float& number)
+{
+	for (auto& datas : _matrix)
+	{
+		for (auto& data : datas)
+			data *= number;
+	}
+	return *this;
+}
+
+template <typename T>
+Matrix<T>	Matrix<T>::operator*(const float& number) const
+{
+	Matrix result(_nbrLines, _nbrColumns);
+	for (size_t i = 0 ; i < _nbrLines ; i++)
+	{
+		for (size_t j = 0 ; j < _nbrColumns ; j++)
+			result[i][j] = _matrix[i][j] * number;
+	}
+	return result;
+}
+
+template <typename T>
+Matrix<T>	Matrix<T>::operator/(const float& number) const
+{
+	if (number == 0)
+		throw Error("Error: division by 0 undefine");
+	return Matrix<T>(*this) * (1 / number);
+}
+
+template <typename T>
+template <typename U>
+Vector<U>	Matrix<T>::operator*(const Vector<U>& vector) const
+{
+	if (_nbrColumns != vector.getDimension())
+		throw Error("Error: vector.dimension has to be the same as matrix.column");
+	return Vector<U>(*this * Matrix<U>(vector));
 }

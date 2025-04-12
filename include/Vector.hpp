@@ -5,6 +5,7 @@
 #include <cmath>
 #include "Complex.hpp"
 #include "LinearAlgebra.hpp"
+#include <variant>
 
 template <typename T>
 class Matrix;
@@ -23,6 +24,7 @@ class	Vector
 		inline				Vector(const std::vector<T>& stdvector) : _vector(stdvector) {}
 		inline				Vector(const size_t& dimension) : _vector(std::vector<T>(dimension)) {}
 		inline				Vector(const std::initializer_list<T>& list) : _vector(list) {}
+						Vector(const Matrix<T>& matrix);
 
 		Vector<T>&			operator=(const Vector<T>& vector);
 		inline Vector<T>&		operator=(const std::vector<T>& stdvector) { _vector = stdvector; return *this; }
@@ -46,8 +48,8 @@ class	Vector
 		void				normalise(void);
 };
 
-template <typename Ta, typename Tb>
-std::variant<Complex, float>	dotProduct(const Vector<Ta>& a, const Vector<Tb>& b);
+template <typename T, typename Ta, typename Tb>
+T	dotProduct(const Vector<Ta>& a, const Vector<Tb>& b);
 
 template <typename Ta, typename Tb>
 inline bool	areOrthogonals(const Vector<Ta>& a, const Vector<Tb>& b) { return dotProduct(a, b) == Complex{}; }

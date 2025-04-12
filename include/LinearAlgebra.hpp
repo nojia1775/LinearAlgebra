@@ -4,7 +4,6 @@
 #include "Matrix.hpp"
 #include "Vector.hpp"
 #include "Error.hpp"
-#include <variant>
 #include <iostream>
 #include <vector>
 #include <cmath>
