@@ -19,25 +19,37 @@ class	Vector
 	public:
 		inline				Vector(void) : _vector(std::vector<T>()) {}
 		inline				~Vector(void) {}
-
-		inline				Vector(const Vector<T>& vector) : _vector(vector._vector) {}
-		inline				Vector(const std::vector<T>& stdvector) : _vector(stdvector) {}
+						template <typename U>
+		inline				Vector(const Vector<U>& vector) : _vector(vector._vector) {}
+						template <typename U>
+		inline				Vector(const std::vector<U>& stdvector) : _vector(stdvector) {}
 		inline				Vector(const size_t& dimension) : _vector(std::vector<T>(dimension)) {}
-		inline				Vector(const std::initializer_list<T>& list) : _vector(list) {}
-						Vector(const Matrix<T>& matrix);
+						template <typename U>
+		inline				Vector(const std::initializer_list<U>& list) : _vector(list) {}
+						template <typename U>
+						Vector(const Matrix<U>& matrix);
 
-		Vector<T>&			operator=(const Vector<T>& vector);
-		inline Vector<T>&		operator=(const std::vector<T>& stdvector) { _vector = stdvector; return *this; }
-		inline Vector<T>&		operator=(const std::initializer_list<T>& list) { _vector = list; return *this; }
-		Vector<T>&			operator=(const Matrix<T>& matrix);
-		Vector<T>			operator+(const Vector<T>& vector) const;
-		Vector<T>			operator-(const Vector<T>& vector) const;
-		Vector<T>			operator*(const Vector<T>& vector) const;
+						template <typename U>
+		Vector<T>&			operator=(const Vector<U>& vector);
+						template <typename U>
+		inline Vector<T>&		operator=(const std::vector<U>& stdvector) { _vector = stdvector; return *this; }
+						template <typename U>
+		inline Vector<T>&		operator=(const std::initializer_list<U>& list) { _vector = list; return *this; }
+						template <typename U>
+		Vector<T>&			operator=(const Matrix<U>& matrix);
+						template <typename U>
+		Vector<T>			operator+(const Vector<U>& vector) const;
+						template <typename U>
+		Vector<T>			operator-(const Vector<U>& vector) const;
+						template <typename U>
+		Vector<T>			operator*(const Vector<U>& vector) const;
 		Vector<T>			operator*(const float& number) const;
 		T&				operator[](const size_t& index);
 		const T&			operator[](const size_t& index) const;
-		bool				operator==(const Vector<T>& vector) const;
-		bool				operator!=(const Vector<T>& vector) const;
+						template <typename U>
+		bool				operator==(const Vector<U>& vector) const;
+						template <typename U>
+		bool				operator!=(const Vector<U>& vector) const;
 
 		inline size_t			getDimension(void) const { return _vector.size(); }
 		float				getNorm(void) const;

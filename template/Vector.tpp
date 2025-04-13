@@ -4,7 +4,8 @@
 #include <variant>
 
 template <typename T>
-Vector<T>::Vector(const Matrix<T>& matrix)
+template <typename U>
+Vector<T>::Vector(const Matrix<U>& matrix)
 {
 	if (matrix.getNbrColumn() != 1)
 		throw Error("Error: matrix has to have 1 column");
@@ -12,7 +13,8 @@ Vector<T>::Vector(const Matrix<T>& matrix)
 }
 
 template <typename T>
-Vector<T>&	Vector<T>::operator=(const Vector<T>& vector)
+template <typename U>
+Vector<T>&	Vector<T>::operator=(const Vector<U>& vector)
 {
 	if (this != &vector)
 		_vector = vector._vector;
@@ -20,7 +22,8 @@ Vector<T>&	Vector<T>::operator=(const Vector<T>& vector)
 }
 
 template <typename T>
-Vector<T>	Vector<T>::operator+(const Vector& vector) const
+template <typename U>
+Vector<T>	Vector<T>::operator+(const Vector<U>& vector) const
 {
 	if (getDimension() != vector.getDimension())
 		throw Error("Error: vectors have to be the same dimension");
@@ -31,7 +34,8 @@ Vector<T>	Vector<T>::operator+(const Vector& vector) const
 }
 
 template <typename T>
-Vector<T>	Vector<T>::operator-(const Vector& vector) const
+template <typename U>
+Vector<T>	Vector<T>::operator-(const Vector<U>& vector) const
 {
 	if (getDimension() != vector.getDimension())
 		throw Error("Error: vectors have to be the same dimension");
@@ -42,7 +46,8 @@ Vector<T>	Vector<T>::operator-(const Vector& vector) const
 }
 
 template <typename T>
-Vector<T>	Vector<T>::operator*(const Vector& vector) const
+template <typename U>
+Vector<T>	Vector<T>::operator*(const Vector<U>& vector) const
 {
 	if (getDimension() != vector.getDimension())
 		throw Error("Error: vectors have to be the same dimension");
@@ -112,7 +117,8 @@ T	dotProduct(const Vector<Ta>& a, const Vector<Tb>& b)
 }
 
 template <typename T>
-bool	Vector<T>::operator==(const Vector<T>& vector) const
+template <typename U>
+bool	Vector<T>::operator==(const Vector<U>& vector) const
 {
 	if (vector.getDimension() != getDimension())
 		return false;
@@ -123,7 +129,8 @@ bool	Vector<T>::operator==(const Vector<T>& vector) const
 }
 
 template <typename T>
-bool	Vector<T>::operator!=(const Vector<T>& vector) const
+template <typename U>
+bool	Vector<T>::operator!=(const Vector<U>& vector) const
 {
 	if (vector.getDimension() != getDimension())
 		return true;
@@ -160,7 +167,8 @@ void	Vector<T>::normalise(void)
 }
 
 template <typename T>
-Vector<T>&	Vector<T>::operator=(const Matrix<T>& matrix)
+template <typename U>
+Vector<T>&	Vector<T>::operator=(const Matrix<U>& matrix)
 {
 	if (matrix.getNbrColumns() != 1)
 		throw Error("Error: the number of column of the matrix has to be 1");

@@ -36,7 +36,7 @@ class	Matrix
 		Matrix<T>		operator*(const Matrix<T>& matrix) const;
 		Matrix<T>		operator*(const float& number) const;
 		Matrix<T>		operator/(const float& number) const;
-		template <typename U>
+					template <typename U>
 		Vector<U>		operator*(const Vector<U>& vector) const;
 		Matrix<T>&		operator*=(const float& number);
 

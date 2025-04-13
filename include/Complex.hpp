@@ -45,6 +45,8 @@ class	Complex
 		void			operator/=(const float& number);
 		inline bool		operator==(const Complex& complex) const { return _imaginary == complex._imaginary && _real == complex._real; }
 		inline bool		operator==(const float& number) const { return _real == number && _imaginary == 0; }
+		inline bool		operator!=(const Complex& complex) const { return _imaginary != complex._imaginary || _real != complex._real; }
+		inline bool		operator!=(const float& number) const { return _real != number && _imaginary != 0; }
 };
 
 std::ostream&	operator<<(std::ostream& o, const Complex& complex);
