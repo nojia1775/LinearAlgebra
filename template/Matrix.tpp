@@ -315,3 +315,18 @@ bool	Matrix<T>::isDiagonal(void) const
 	}
 	return true;
 }
+
+template <typename T>
+Matrix<T>	powMatrix(const Matrix<T>& matrix, const size_t& power)
+{
+	Matrix<T> result(matrix);
+	if (result.isDiagonal())
+	{
+		for (size_t i = 0 ; i < result.getNbrColumns() ; i++)
+			result[i][i] = pow(result[i][i], power);
+		return result;
+	}
+	for (size_t i = 0 ; i < power - 1 ; i++)
+		result = result * matrix;
+	return result;
+}

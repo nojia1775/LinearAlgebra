@@ -18,7 +18,7 @@ class	Matrix
 	
 	public:
 		inline			Matrix(void) : _nbrColumns(0), _nbrLines(0) {}
-		inline			~Matrix(void) {}
+		inline virtual		~Matrix(void) {}
 
 		inline			Matrix(const size_t& nbrLines, const size_t& nbrColumns) : _matrix(vector2(nbrLines, std::vector<T>(nbrColumns, T{}))), _nbrLines(nbrLines), _nbrColumns(nbrColumns) {}
 					template <typename U>
@@ -56,5 +56,8 @@ class	Matrix
 		inline bool		isSquare(void) const { return _nbrLines == _nbrColumns; }
 		bool			isDiagonal(void) const;
 };
+
+template <typename T>
+Matrix<T>	powMatrix(const Matrix<T>& matrix, const size_t& power);
 
 #include "../template/Matrix.tpp"

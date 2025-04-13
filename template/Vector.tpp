@@ -28,6 +28,7 @@ Vector<T>::Vector(const Matrix<U>& matrix)
 {
 	if (matrix.getNbrColumns() != 1)
 		throw Error("Error: matrix has to have 1 column");
+	_vector = std::vector<T>(matrix.getNbrLines());
 	*this = matrix.getColumn(0);
 }
 

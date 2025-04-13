@@ -2,7 +2,8 @@ CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -g -MMD
 
 SRCS =	src/Complex.cpp \
-	src/IdentityMatrix.cpp
+	src/IdentityMatrix.cpp \
+	src/DiffMatrix.cpp
 
 OBJS_DIR = obj/
 OBJS = $(SRCS:%.cpp=$(OBJS_DIR)%.o)
