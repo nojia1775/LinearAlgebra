@@ -20,7 +20,7 @@ class	Vector
 		inline				Vector(void) : _vector(std::vector<T>()) {}
 		inline				~Vector(void) {}
 						template <typename U>
-		inline				Vector(const Vector<U>& vector) : _vector(vector._vector) {}
+						Vector(const Vector<U>& vector);
 						template <typename U>
 		inline				Vector(const std::vector<U>& stdvector) : _vector(stdvector) {}
 		inline				Vector(const size_t& dimension) : _vector(std::vector<T>(dimension)) {}

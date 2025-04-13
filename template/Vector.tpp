@@ -5,19 +5,51 @@
 
 template <typename T>
 template <typename U>
+Vector<T>::Vector(const Vector<U>& vector)
+{
+	_vector = std::vector<T>(vector.getDimension());
+	for (size_t i = 0 ; i < vector.getDimension() ; i++)
+	{
+		if constexpr (std::is_same<U, Complex>::value)
+		{
+			if constexpr (std::is_same<T, Complex>::value)
+				_vector[i] = vector[i];
+			else
+				_vector[i] = static_cast<float>(vector[i].getRealPart());
+		}
+		else
+			_vector[i] = static_cast<float>(vector[i]);
+	}
+}
+
+template <typename T>
+template <typename U>
 Vector<T>::Vector(const Matrix<U>& matrix)
 {
-	if (matrix.getNbrColumn() != 1)
+	if (matrix.getNbrColumns() != 1)
 		throw Error("Error: matrix has to have 1 column");
-	_vector = matrix.getColumn(0);
+	*this = matrix.getColumn(0);
 }
 
 template <typename T>
 template <typename U>
 Vector<T>&	Vector<T>::operator=(const Vector<U>& vector)
 {
-	if (this != &vector)
-		_vector = vector._vector;
+	if (reinterpret_cast<const void *>(this) != reinterpret_cast<const void *>(&vector))
+	{
+		for (size_t i = 0 ; i < vector.getDimension() ; i++)
+		{
+			if constexpr (std::is_same<U, Complex>::value)
+			{
+				if constexpr (std::is_same<T, Complex>::value)
+					_vector[i] = vector[i];
+				else
+					_vector[i] = static_cast<float>(vector[i].getRealPart());
+			}
+			else
+				_vector[i] = static_cast<float>(vector[i]);
+		}
+	}
 	return *this;
 }
 

@@ -11,13 +11,6 @@ Complex&	Complex::operator=(const Complex& complex)
 	return *this;
 }
 
-Complex&	Complex::operator=(const float& number)
-{
-	_real = number;
-	_imaginary = 0;
-	return *this;
-}
-
 Complex	Complex::operator*(const Complex& complex) const
 {
 	Complex result;

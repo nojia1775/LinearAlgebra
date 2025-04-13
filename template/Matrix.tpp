@@ -3,6 +3,28 @@
 
 template <typename T>
 template <typename U>
+Matrix<T>::Matrix(const Vector<U>& vector) : _nbrLines(vector.getDimension()), _nbrColumns(1)
+{
+	_matrix = std::vector<std::vector<T>>(_nbrLines, std::vector<T>(_nbrColumns));
+	for (size_t i = 0 ; i < _nbrLines ; i++)
+	{
+		for (size_t j = 0 ; j < _nbrColumns ; j++)
+		{
+			if constexpr (std::is_same<U, Complex>::value)
+			{
+				if constexpr (std::is_same<T, Complex>::value)
+					_matrix[i][j] = vector[i];
+				else
+					_matrix[i][j] = static_cast<float>(vector[i].getRealPart());
+			}
+			else
+				_matrix[i][j] = static_cast<float>(vector[i]);
+		}
+	}
+}
+
+template <typename T>
+template <typename U>
 Matrix<T>::Matrix(const Matrix<U>& matrix)
 {
 	_nbrLines = matrix.getNbrLines();
@@ -21,7 +43,8 @@ Matrix<T>::Matrix(const Matrix<U>& matrix)
 }
 
 template <typename T>
-Matrix<T>::Matrix(const std::initializer_list<std::initializer_list<T>>& list)
+template <typename U>
+Matrix<T>::Matrix(const std::initializer_list<std::initializer_list<U>>& list)
 {
 	for (const auto data : list)
 		if (data.size() != list.begin()->size())
@@ -30,8 +53,26 @@ Matrix<T>::Matrix(const std::initializer_list<std::initializer_list<T>>& list)
 	_nbrColumns = list.begin()->size();
 	_matrix = std::vector<std::vector<T>>(_nbrLines, std::vector<T>(_nbrColumns));
 	_matrix.clear();
-	for (const auto data : list)
-		_matrix.emplace_back(data);
+	_matrix = std::vector<std::vector<T>>(_nbrLines, std::vector<T>(_nbrColumns));
+	size_t i = 0;
+	for (const auto& datas : list)
+	{
+		size_t j = 0;
+		for (const auto& data : datas)
+		{
+			if constexpr (std::is_same<U, Complex>::value)
+			{
+				if constexpr (std::is_same<T, Complex>::value)
+					_matrix[i][j] = data;
+				else
+					_matrix[i][j] = static_cast<float>(data.getRealPart());
+			}
+			else
+				_matrix[i][j] = static_cast<float>(data);
+			j++;
+		}
+		i++;
+	}
 }
 
 template <typename T>
@@ -49,33 +90,68 @@ Matrix<T>::Matrix(const vector2& vector)
 }
 
 template <typename T>
-Matrix<T>&	Matrix<T>::operator=(const Matrix<T>& matrix)
+template <typename U>
+Matrix<T>&	Matrix<T>::operator=(const Matrix<U>& matrix)
 {
-	if (this != &matrix)
+	if (reinterpret_cast<const void *>(this) != reinterpret_cast<const void *>(&matrix))
 	{
-		_nbrLines = matrix._nbrLines;
-		_nbrColumns = matrix._nbrColumns;
-		_matrix = matrix._matrix;
+		_nbrLines = matrix.getNbrLines();
+		_nbrColumns = matrix.getNbrColumns();
+		_matrix = std::vector<std::vector<T>>(matrix.getNbrLine(), std::vector<T>(matrix.getNbrColumns()));
+		for (size_t i = 0 ; i < _nbrLines ; i++)
+		{
+			for (size_t j = 0 ; j < _nbrColumns ; j++)
+			{
+				if constexpr (std::is_same<U, Complex>::value)
+				{
+					if constexpr (std::is_same<T, Complex>::value)
+						_matrix[i][j] = matrix[i][j];
+					else
+						_matrix[i][j] = static_cast<float>(matrix[i][j].getRealPart());
+				}
+				else
+					_matrix[i][j] = static_cast<float>(matrix[i][j]);
+			}
+		}
 	}
 	return *this;
 }
 
 template <typename T>
-Matrix<T>&	Matrix<T>::operator=(const std::initializer_list<std::initializer_list<T>>& list)
+template <typename U>
+Matrix<T>&	Matrix<T>::operator=(const std::initializer_list<std::initializer_list<U>>& list)
 {
 	for (const auto data : list)
 		if (data.size() != list[0].size())
 			throw Error("Error: initializers have to be the same size");
 	_nbrLines = list.size();
-	_nbrColumns = list[0].size();
-	_matrix.clear();
-	for (size_t i = 0 ; i < _nbrLines ; i++)
-		_matrix.emplace_back(list[i]);
+	_nbrColumns = list.begin()->size();
+	_matrix = std::vector<std::vector<T>>(_nbrLines, std::vector<T>(_nbrColumns));
+	size_t i = 0;
+	for (const auto& datas : list)
+	{
+		size_t j = 0;
+		for (const auto& data : datas)
+		{
+			if constexpr (std::is_same<U, Complex>::value)
+			{
+				if constexpr (std::is_same<T, Complex>::value)
+					_matrix[i][j] = data;
+				else
+					_matrix[i][j] = static_cast<float>(data.getRealPart());
+			}
+			else
+				_matrix[i][j] = static_cast<float>(data);
+			j++;
+		}
+		i++;
+	}
 	return *this;
 }
 
 template <typename T>
-Matrix<T>&	Matrix<T>::operator=(const std::vector<std::vector<T>>& vector)
+template <typename U>
+Matrix<T>&	Matrix<T>::operator=(const std::vector<std::vector<U>>& vector)
 {
 	for (const auto data : vector)
 		if (data.size() != vector[0].size())
@@ -83,21 +159,46 @@ Matrix<T>&	Matrix<T>::operator=(const std::vector<std::vector<T>>& vector)
 	_nbrLines = vector.size();
 	_nbrColumns = vector[0].size();
 	_matrix = std::vector<std::vector<T>>(_nbrLines, std::vector<T>(_nbrColumns));
-	_matrix.clear();
 	for (size_t i = 0 ; i < _nbrLines ; i++)
-		_matrix.emplace_back(vector[i]);
+	{
+		for (size_t j = 0 ; j < _nbrColumns ; j++)
+		{
+			if constexpr (std::is_same<U, Complex>::value)
+			{
+				if constexpr (std::is_same<T, Complex>::value)
+					_matrix[i][j] = vector[i][j];
+				else
+					_matrix[i][j] = static_cast<float>(vector[i][j].getRealPart());
+			}
+			else
+				_matrix[i][j] = static_cast<float>(vector[i][j]);
+		}
+	}
 	return *this;
 }
 
 template <typename T>
-Matrix<T>&	Matrix<T>::operator=(const Vector<T>& vector)
+template <typename U>
+Matrix<T>&	Matrix<T>::operator=(const Vector<U>& vector)
 {
 	_nbrLines = vector.getDimension();
 	_nbrColumns = 1;
 	_matrix = std::vector<std::vector<T>>(_nbrLines, std::vector<T>(_nbrColumns));
-	_matrix.clear();
 	for (size_t i = 0 ; i < _nbrLines ; i++)
-		_matrix.emplace_back(vector[i]);
+	{
+		for (size_t j = 0 ; j < _nbrColumns ; j++)
+		{
+			if constexpr (std::is_same<U, Complex>::value)
+			{
+				if constexpr (std::is_same<T, Complex>::value)
+					_matrix[i][j] = vector[i];
+				else
+					_matrix[i][j] = static_cast<float>(vector[i].getRealPart());
+			}
+			else
+				_matrix[i][j] = static_cast<float>(vector[i]);
+		}
+	}
 }
 
 template <typename T>
@@ -120,21 +221,21 @@ template <typename T>
 void	Matrix<T>::display(void) const
 {
 	std::cout << "[\n";
-	for (const auto data : _matrix)
-		Vector(data).display();
+	for (const auto& data : _matrix)
+		Vector<T>(data).display();
 	std::cout << "]\n";
 }
 
 template <typename T>
-const Vector<T>	Matrix<T>::getLine(const size_t& index) const
+Vector<T>	Matrix<T>::getLine(const size_t& index) const
 {
 	if (index > getNbrLines() - 1)
 		throw Error("Error: index out of range");
-	return Vector(_matrix[index]);
+	return Vector<T>(_matrix[index]);
 }
 
 template <typename T>
-const Vector<T>	Matrix<T>::getColumn(const size_t& index) const
+Vector<T>	Matrix<T>::getColumn(const size_t& index) const
 {
 	if (index > getNbrColumns() - 1)
 		throw Error("Error: index out of range");
@@ -145,13 +246,14 @@ const Vector<T>	Matrix<T>::getColumn(const size_t& index) const
 }
 
 template <typename T>
-Matrix<T>	Matrix<T>::operator*(const Matrix<T>& matrix) const
+template <typename U>
+Matrix<T>	Matrix<T>::operator*(const Matrix<U>& matrix) const
 {
-	Matrix<T> result(_nbrLines, matrix._nbrColumns);
+	Matrix<T> result(_nbrLines, matrix.getNbrColumns());
 	for (size_t i = 0 ; i < result._nbrLines ; i++)
 	{
 		for (size_t j = 0 ; j < result._nbrColumns ; j++)
-			result[i][j] = dotProduct<T>(Vector<T>(getLine(i)), Vector<T>(matrix.getColumn(j)));
+			result[i][j] = dotProduct<T>(getLine(i), matrix.getColumn(j));
 	}
 	return result;
 }
@@ -194,4 +296,22 @@ Vector<U>	Matrix<T>::operator*(const Vector<U>& vector) const
 	if (_nbrColumns != vector.getDimension())
 		throw Error("Error: vector.dimension has to be the same as matrix.column");
 	return Vector<U>(*this * Matrix<U>(vector));
+}
+
+template <typename T>
+bool	Matrix<T>::isDiagonal(void) const
+{
+	if (!isSquare())
+		return false;
+	for (size_t i = 0 ; i < _nbrLines ; i++)
+	{
+		for (size_t j = 0 ; j < _nbrColumns ; j++)
+		{
+			if (i != j && _matrix[i][j])
+				return false;
+			if (i == j && _matrix[i][j] == 0)
+				return false;
+		}
+	}
+	return true;
 }

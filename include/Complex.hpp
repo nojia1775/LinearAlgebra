@@ -17,7 +17,8 @@ class	Complex
 
 		inline			Complex(const float& real, const float& imaginary) : _real(real), _imaginary(imaginary) {}
 		inline			Complex(const Complex& complex) : _real(complex._real), _imaginary(complex._imaginary) {}
-		inline			Complex(const float& number) : _real(number), _imaginary(0) {}
+					template <typename T>
+		inline			Complex(const T& number) : _real(static_cast<float>(number)), _imaginary(0) {}
 
 		inline const float&	getImaginaryPart(void) const { return _imaginary; }
 		inline const float&	getRealPart(void) const { return _real; }
@@ -26,7 +27,8 @@ class	Complex
 		float			getArgument(void) const;
 
 		Complex&		operator=(const Complex& complex);
-		Complex&		operator=(const float& number);
+					template <typename T>
+		Complex&		operator=(const T& number);
 		inline Complex		operator+(const Complex& complex) const { return Complex(_real + complex._real, _imaginary + complex._imaginary); }
 		inline Complex		operator+(const float& number) const { return Complex(_real + number, _imaginary); }
 		inline Complex		operator-(const Complex& complex) const { return Complex(_real - complex._real, _imaginary - complex._imaginary); }
@@ -50,3 +52,5 @@ class	Complex
 };
 
 std::ostream&	operator<<(std::ostream& o, const Complex& complex);
+
+#include "../template/Complex.tpp"
