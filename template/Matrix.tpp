@@ -330,3 +330,33 @@ Matrix<T>	powMatrix(const Matrix<T>& matrix, const size_t& power)
 		result = result * matrix;
 	return result;
 }
+
+template <typename T>
+static T	determinant3(const Matrix<T>& matrix)
+{
+	T result{};
+	size_t j = 0;
+	size_t k = 1;
+	size_t l = 2;
+	for (size_t i = 0 ; i < 3 ; i++)
+		result += matrix[0][j++ % 3] * matrix[1][k++ % 3] * matrix[2][l++ % 3];
+	j = 2;
+	k = 1;
+	l = 0;
+	for (size_t i = 0 ; i < 3 ; i++)
+		result -= matrix[0][j++ % 3] * matrix[1][k++ % 3] * matrix[2][l++ % 3];
+	return result;
+}
+
+template <typename T>
+T	Matrix<T>::getDeterminant(void) const
+{
+	if (!isSquare())
+		throw Error("Error: matrix has to be square");
+	if (getNbrLines() == 2)
+		return _matrix[0][0] * _matrix[1][1] - _matrix[0][1] * _matrix[1][0];
+	else if (getNbrLines() == 3)
+		return determinant3(*this);
+	else
+		return 0;
+}

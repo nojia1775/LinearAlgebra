@@ -51,10 +51,12 @@ class	Matrix
 		inline const size_t&	getNbrColumns(void) const { return _nbrColumns; }
 		Vector<T>		getLine(const size_t& index) const;
 		Vector<T>		getColumn(const size_t& index) const;
+		T			getDeterminant(void) const;
 
 		void			display(void) const;
 		inline bool		isSquare(void) const { return _nbrLines == _nbrColumns; }
 		bool			isDiagonal(void) const;
+		inline bool		isInversible(void) const { return getDeterminant() == 0; }
 };
 
 template <typename T>
