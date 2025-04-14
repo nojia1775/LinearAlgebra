@@ -66,4 +66,7 @@ T	dotProduct(const Vector<Ta>& a, const Vector<Tb>& b);
 template <typename Ta, typename Tb>
 inline bool	areOrthogonals(const Vector<Ta>& a, const Vector<Tb>& b) { return dotProduct(a, b) == Complex{}; }
 
-#include "../template/Vector.tpp"
+#include "../template/Vector/constructors.tpp"
+#include "../template/Vector/getters.tpp"
+#include "../template/Vector/operators.tpp"
+#include "../template/Vector/functions.tpp"

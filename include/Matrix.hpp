@@ -66,4 +66,7 @@ class	Matrix
 template <typename T>
 Matrix<T>	powMatrix(const Matrix<T>& matrix, const size_t& power);
 
-#include "../template/Matrix.tpp"
+#include "../template/Matrix/functions.tpp"
+#include "../template/Matrix/getters.tpp"
+#include "../template/Matrix/operators.tpp"
+#include "../template/Matrix/constructors.tpp"
