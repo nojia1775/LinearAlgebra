@@ -88,6 +88,6 @@ std::ostream&	operator<<(std::ostream& o, const Complex& complex)
 float	Complex::getArgument(void) const
 {
 	if (_real == 0)
-		return std::numeric_limits<float>::quiet_NaN();
+		return 1e10;
 	return std::atan(_imaginary / _real);
 }

@@ -1,5 +1,5 @@
-CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -g -MMD
+CXX = g++
+CXXFLAGS = -std=c++2a -Wall -Wextra -Werror -g -MMD
 
 SRCS =	src/Complex.cpp \
 	src/IdentityMatrix.cpp \
