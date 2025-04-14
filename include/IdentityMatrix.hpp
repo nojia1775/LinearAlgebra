@@ -2,7 +2,8 @@
 
 #include "LinearAlgebra.hpp"
 
-class	IdentityMatrix : public Matrix<float>
+template <typename T>
+class	IdentityMatrix : public Matrix<T>
 {
 	private:
 		const size_t		_dimension;
@@ -11,8 +12,10 @@ class	IdentityMatrix : public Matrix<float>
 					IdentityMatrix(const size_t& dimension);
 		inline			~IdentityMatrix(void) {}
 
-		inline			IdentityMatrix(const IdentityMatrix& identityMatrix) : Matrix<float>(identityMatrix), _dimension(identityMatrix._dimension) {}
-		IdentityMatrix&		operator=(const IdentityMatrix& IdentityMatrix);
+		inline			IdentityMatrix(const IdentityMatrix<T>& identityMatrix) : Matrix<float>(identityMatrix), _dimension(identityMatrix._dimension) {}
+		IdentityMatrix<T>&		operator=(const IdentityMatrix<T>& IdentityMatrix);
 
 		inline const size_t&	getDimension(void) const { return _dimension; }
 };
+
+#include "../template/IdentityMatrix.tpp"

@@ -46,6 +46,10 @@ class	Matrix
 					template <typename U>
 		Vector<U>		operator*(const Vector<U>& vector) const;
 		Matrix<T>&		operator*=(const float& number);
+					template <typename U>
+		bool			operator==(const Matrix<U>& matrix) const;
+					template <typename U>
+		inline bool		operator!=(const Matrix<U>& matrix) const { return !operator==(matrix); }
 
 		inline const size_t&	getNbrLines(void) const { return _nbrLines; }
 		inline const size_t&	getNbrColumns(void) const { return _nbrColumns; }

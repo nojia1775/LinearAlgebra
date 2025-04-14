@@ -42,10 +42,17 @@ T	Matrix<T>::getDeterminant(void) const
 {
 	if (!isSquare())
 		throw Error("Error: matrix has to be square");
+	if (isLowerTriangle() || isUpperTriangle())
+	{
+		T result(1);
+		for (size_t i = 0 ; i < getNbrColumns() ; i++)
+			result *= _matrix[i][i];
+		return result;
+	}
 	if (getNbrLines() == 2)
 		return _matrix[0][0] * _matrix[1][1] - _matrix[0][1] * _matrix[1][0];
 	else if (getNbrLines() == 3)
 		return determinant3(*this);
 	else
-		return T{};
+		return decomLU()[2].getDeterminant();
 }

@@ -181,3 +181,20 @@ Vector<U>	Matrix<T>::operator*(const Vector<U>& vector) const
 		throw Error("Error: vector.dimension has to be the same as matrix.column");
 	return Vector<U>(*this * Matrix<U>(vector));
 }
+
+template <typename T>
+template <typename U>
+bool	Matrix<T>::operator==(const Matrix<U>& matrix) const
+{
+	if (_nbrLines != matrix.getNbrLines() || _nbrColumns != matrix.getNbrColumns())
+		return false;
+	for (size_t i = 0 ; i < getNbrLines() ; i++)
+	{
+		for (size_t j = 0 ; j < getNbrColumns() ; j++)
+		{
+			if (_matrix[i][j] != matrix[i][j])
+				return false;
+		}
+	}
+	return true;
+}

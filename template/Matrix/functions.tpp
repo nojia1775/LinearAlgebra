@@ -1,5 +1,6 @@
 #include "../../include/Matrix.hpp"
 #include "../../include/Error.hpp"
+#include "../../include/IdentityMatrix.hpp"
 
 template <typename T>
 void	Matrix<T>::display(void) const
@@ -44,15 +45,43 @@ Matrix<T>	powMatrix(const Matrix<T>& matrix, const size_t& power)
 }
 
 template <typename T>
+static size_t	goodToSwitch(const Matrix<T>& matrix, const size_t& pos)
+{
+	for (size_t i = pos ; i < matrix.getNbrLines() ; i++)
+		if (matrix[i][pos] != T{})
+			return i;
+	return pos;
+}
+
+// retourne P, L et U tel que PA = LU
+template <typename T>
 std::vector<Matrix<T>>	Matrix<T>::decomLU(void) const
 {
 	if (!isSquare())
 		throw Error("Error: matrix has to be square");
 	Matrix<T> L(getNbrColumns(), getNbrColumns());
 	Matrix<T> U(*this);
+	IdentityMatrix<T> P(getNbrColumns());
 	for (size_t i = 0 ; i < getNbrColumns() ; i++)
 		L[i][i] = 1;
-	return {L, U};
+	for (size_t i = 0 ; i < getNbrLines() ; i++)
+	{
+		if (U[i][i] == T{})
+		{
+			U.switchLine(i, goodToSwitch(*this, i));
+			P.switchLine(i, goodToSwitch(*this, i));
+		}
+		for (size_t j = i + 1 ; j < U.getNbrLines() ; j++)
+		{
+			if (U[j][i] != T{})
+			{
+				L[j][i] = U[j][i] / U[i][i];
+				for (size_t k = i ; k < U.getNbrColumns() ; k++)
+					U[j][k] -= U[i][k] * L[j][i];
+			}
+		}
+	}
+	return {P, L, U};
 }
 
 template <typename T>

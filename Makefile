@@ -2,7 +2,6 @@ CXX = g++
 CXXFLAGS = -std=c++2a -Wall -Wextra -Werror -g -MMD
 
 SRCS =	src/Complex.cpp \
-	src/IdentityMatrix.cpp \
 	src/DiffMatrix.cpp
 
 OBJS_DIR = obj/
