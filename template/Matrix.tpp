@@ -358,5 +358,63 @@ T	Matrix<T>::getDeterminant(void) const
 	else if (getNbrLines() == 3)
 		return determinant3(*this);
 	else
-		return 0;
+		return T{};
+}
+
+template <typename T>
+std::vector<Matrix<T>>	Matrix<T>::decomLU(void) const
+{
+	if (!isSquare())
+		throw Error("Error: matrix has to be square");
+	Matrix<T> L(getNbrColumns(), getNbrColumns());
+	Matrix<T> U(*this);
+	for (size_t i = 0 ; i < getNbrColumns() ; i++)
+		L[i][i] = 1;
+	return {L, U};
+}
+
+template <typename T>
+void	Matrix<T>::switchLine(const size_t& l1, const size_t& l2)
+{
+	if (l1 == l2)
+		return;
+	if (l1 > getNbrLines() - 1)
+		throw Error("Error: l1 out of range");
+	if (l2 > getNbrLines() - 1)
+		throw Error("Error: l2 out of range");
+	Vector<T> tmp(getLine(l1));
+	_matrix[l1] = _matrix[l2];
+	_matrix[l2] = tmp.getStdVector();
+}
+
+template <typename T>
+bool	Matrix<T>::isUpperTriangle(void) const
+{
+	if (!isSquare())
+		throw Error("Error: matrix has to be square");
+	for (size_t i = 0 ; i < getNbrLines() ; i++)
+	{
+		for (size_t j = 0 ; j < getNbrColumns() ; j++)
+		{
+			if (i > j && _matrix[i][j] != T{})
+				return false;
+		}
+	}
+	return true;
+}
+
+template <typename T>
+bool	Matrix<T>::isLowerTriangle(void) const
+{
+	if (!isSquare())
+		throw Error("Error: matrix has to be square");
+	for (size_t i = 0 ; i < getNbrLines() ; i++)
+	{
+		for (size_t j = 0 ; j < getNbrColumns() ; j++)
+		{
+			if (i < j && _matrix[i][j] != T{})
+				return false;
+		}
+	}
+	return true;
 }

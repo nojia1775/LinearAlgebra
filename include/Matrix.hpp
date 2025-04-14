@@ -57,6 +57,10 @@ class	Matrix
 		inline bool		isSquare(void) const { return _nbrLines == _nbrColumns; }
 		bool			isDiagonal(void) const;
 		inline bool		isInversible(void) const { return getDeterminant() == 0; }
+		std::vector<Matrix<T>>	decomLU(void) const;
+		void			switchLine(const size_t& l1, const size_t& l2);
+		bool			isUpperTriangle(void) const;
+		bool			isLowerTriangle(void) const;
 };
 
 template <typename T>
