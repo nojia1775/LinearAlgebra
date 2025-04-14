@@ -54,5 +54,12 @@ T	Matrix<T>::getDeterminant(void) const
 	else if (getNbrLines() == 3)
 		return determinant3(*this);
 	else
-		return decomLU()[2].getDeterminant();
+		return decompLU()[2].getDeterminant();
+}
+
+template <typename T>
+Matrix<T>	Matrix<T>::getInverse(void) const
+{
+	if (isInversible() == false)
+		throw Error("Error: this matrix is not inversible");
 }

@@ -55,13 +55,15 @@ static size_t	goodToSwitch(const Matrix<T>& matrix, const size_t& pos)
 
 // retourne P, L et U tel que PA = LU
 template <typename T>
-std::vector<Matrix<T>>	Matrix<T>::decomLU(void) const
+std::vector<Matrix<T>>	Matrix<T>::decompLU(void) const
 {
+	if constexpr (!std::is_floating_point<T>::value)
+		throw Error("Error: matrix must be a floating type");
 	if (!isSquare())
 		throw Error("Error: matrix has to be square");
-	Matrix<T> L(getNbrColumns(), getNbrColumns());
-	Matrix<T> U(*this);
 	IdentityMatrix<T> P(getNbrColumns());
+	IdentityMatrix<T> L(getNbrColumns());
+	Matrix<T> U(*this);
 	for (size_t i = 0 ; i < getNbrColumns() ; i++)
 		L[i][i] = 1;
 	for (size_t i = 0 ; i < getNbrLines() ; i++)
