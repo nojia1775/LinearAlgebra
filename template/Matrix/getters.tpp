@@ -57,9 +57,11 @@ T	Matrix<T>::getDeterminant(void) const
 		return decompLU()[2].getDeterminant();
 }
 
-template <typename T>
-Matrix<T>	Matrix<T>::getInverse(void) const
-{
-	if (isInversible() == false)
-		throw Error("Error: this matrix is not inversible");
-}
+// template <typename T>
+// Matrix<T>	Matrix<T>::getInverse(void) const
+// {
+// 	if (!isSquare())
+// 		throw Error("Error: matrix must be square");
+// 	if (isInversible() == false)
+// 		throw Error("Error: this matrix is not inversible");
+// }

@@ -57,7 +57,7 @@ static size_t	goodToSwitch(const Matrix<T>& matrix, const size_t& pos)
 template <typename T>
 std::vector<Matrix<T>>	Matrix<T>::decompLU(void) const
 {
-	if constexpr (!std::is_floating_point<T>::value)
+	if constexpr (!std::is_floating_point<T>::value && !std::is_same<T, Complex>::value)
 		throw Error("Error: matrix must be a floating type");
 	if (!isSquare())
 		throw Error("Error: matrix has to be square");
