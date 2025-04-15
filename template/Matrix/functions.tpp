@@ -131,3 +131,35 @@ bool	Matrix<T>::isLowerTriangle(void) const
 	}
 	return true;
 }
+
+template <typename T>
+void	Matrix<T>::switchColumn(const size_t& c1, const size_t& c2)
+{
+	if (c1 > getNbrColumns() - 1)
+		throw Error("Error: c1 out of range");
+	if (c2 > getNbrColumns() - 1)
+		throw Error("Error: c2 out of range");
+	if (c1 == c2)
+		return;
+	std::vector<T> v1(getColumn(c1).getStdVector());
+	std::vector<T> v2(getColumn(c2).getStdVector());
+	for (size_t i = 0 ; i < getNbrLines() ; i++)
+	{
+		_matrix[i][c2] = v1[i];
+		_matrix[i][c1] = v2[i];
+	}
+}
+
+template <typename T>
+bool	Matrix<T>::isNull(void) const
+{
+	for (const auto datas : _matrix)
+	{
+		for (const auto data : datas)
+		{
+			if (data > 1e-5 || data < -1e-5)
+				return false;
+		}
+	}
+	return true;
+}

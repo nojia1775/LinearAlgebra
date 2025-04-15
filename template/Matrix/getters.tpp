@@ -49,7 +49,9 @@ T	Matrix<T>::getDeterminant(void) const
 			result *= _matrix[i][i];
 		return result;
 	}
-	if (getNbrLines() == 2)
+	if (getNbrColumns() == 1)
+		return _matrix[0][0];
+	else if (getNbrLines() == 2)
 		return _matrix[0][0] * _matrix[1][1] - _matrix[0][1] * _matrix[1][0];
 	else if (getNbrLines() == 3)
 		return determinant3(*this);
@@ -57,11 +59,66 @@ T	Matrix<T>::getDeterminant(void) const
 		return decompLU()[2].getDeterminant();
 }
 
-// template <typename T>
-// Matrix<T>	Matrix<T>::getInverse(void) const
-// {
-// 	if (!isSquare())
-// 		throw Error("Error: matrix must be square");
-// 	if (isInversible() == false)
-// 		throw Error("Error: this matrix is not inversible");
-// }
+template <typename T>
+Matrix<T>	Matrix<T>::getInverse(void) const
+{
+	if (isInversible() == false)
+		throw Error("Error: this matrix is not inversible");
+	if (getNbrColumns() == 2)
+	{
+		Matrix<T> result(getNbrLines(), getNbrColumns());
+		result[0][0] = _matrix[1][1];
+		result[1][1] = _matrix[0][0];
+		result[0][1] = -_matrix[0][1];
+		result[1][0] = -_matrix[1][0];
+		return result * (1 / getDeterminant());
+	}
+	else
+		return getAdjugate() * (1 / getDeterminant());
+	return *this;
+}
+
+template <typename T>
+Matrix<T>	Matrix<T>::getTranspose(void) const
+{
+	if (!isSquare())
+		throw Error("Error: matrix must be square");
+	Matrix<T> result(*this);
+	for (size_t i = 0 ; i < getNbrColumns() ; i++)
+	{
+		for (size_t j = 0 ; j < getNbrColumns() ; j++)
+			result[j][i] = _matrix[i][j];
+	}
+	return result;
+}
+
+template <typename T>
+Matrix<T>	Matrix<T>::getComatrix(void) const
+{
+	if (!isSquare())
+		throw Error("Error: matrix must be square");
+	if (getNbrColumns() == 1)
+		return *this;
+	Matrix<T> com(getNbrColumns(), getNbrColumns());
+	for (size_t i = 0 ; i < getNbrColumns() ; i++)
+	{
+		for (size_t j = 0 ; j < getNbrColumns() ; j++)
+		{
+			size_t x = 0;
+			Matrix<T> lowMatrix(getNbrColumns() - 1, getNbrColumns() - 1);
+			for (size_t k = 0 ; k < getNbrColumns() ; k++)
+			{
+				for (size_t l = 0 ; l < getNbrColumns() ; l++)
+				{
+					if (k != i && l != j)
+					{
+						lowMatrix[x / (getNbrColumns() - 1)][x % (getNbrColumns() - 1)] = _matrix[k][l];
+						x++;
+					}
+				}
+			}
+			com[i][j] = pow(-1, i + j) * lowMatrix.getDeterminant();
+		}
+	}
+	return com;
+}

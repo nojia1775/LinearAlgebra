@@ -57,15 +57,20 @@ class	Matrix
 		Vector<T>		getColumn(const size_t& index) const;
 		T			getDeterminant(void) const;
 		Matrix<T>		getInverse(void) const;
+		Matrix<T>		getComatrix(void) const;
+		Matrix<T>		getTranspose(void) const;
+		inline Matrix<T>	getAdjugate(void) const { return getComatrix().getTranspose(); }
 
 		void			display(void) const;
 		inline bool		isSquare(void) const { return _nbrLines == _nbrColumns; }
 		bool			isDiagonal(void) const;
-		inline bool		isInversible(void) const { return getDeterminant() != 0; }
+		inline bool		isInversible(void) const { return getDeterminant() && !isNull(); }
 		std::vector<Matrix<T>>	decompLU(void) const;
 		void			switchLine(const size_t& l1, const size_t& l2);
+		void			switchColumn(const size_t& c1, const size_t& c2);
 		bool			isUpperTriangle(void) const;
 		bool			isLowerTriangle(void) const;
+		bool			isNull(void) const;
 };
 
 template <typename T>
