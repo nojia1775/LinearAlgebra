@@ -122,3 +122,42 @@ Matrix<T>	Matrix<T>::getComatrix(void) const
 	}
 	return com;
 }
+
+template <typename T>
+std::vector<Complex>	Matrix<T>::getEigenValues(void) const
+{
+	if (isSquare() == false)
+		throw Error("Error: matrix must be square");
+	std::vector<Complex> eigenValues;
+	//if (getNbrColumns() == 2)
+	//{
+	//	T a = 1;
+	//	T b = -_matrix[0][0] - _matrix[1][1];
+	//	T c = _matrix[0][0] * _matrix[1][1] - _matrix[0][1] * _matrix[1][0];
+	//	T delta = pow(b, 2) - 4 * a * c;
+	//	if (delta < 0)
+	//	{
+	//		eigenValues.push_back(Complex(-b / 2, -sqrt(std::abs(delta)) / 2));
+	//		eigenValues.push_back(Complex(-b / 2, sqrt(std::abs(delta)) / 2));
+	//	}
+	//	else if (delta == 0)
+	//		eigenValues.push_back(-b / 2);
+	//	else
+	//	{
+	//		eigenValues.push_back((-b - sqrt(delta)) / 2);
+	//		eigenValues.push_back((-b + sqrt(delta)) / 2);
+	//	}
+	//	return eigenValues;
+	//}
+	std::vector<Matrix<Complex>> qr(QR());
+	Matrix<Complex> A(qr[1] * qr[0]);
+	while (!A.isUpperTriangle())
+	{
+		A.display();
+		qr = A.QR();
+		A = qr[1] * qr[0];
+	}
+	for (size_t i = 0 ; i < A.getNbrColumns() ; i++)
+		eigenValues.push_back(A[i][i]);
+	return eigenValues;
+}

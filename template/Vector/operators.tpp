@@ -61,7 +61,8 @@ Vector<T>	Vector<T>::operator*(const Vector<U>& vector) const
 }
 
 template <typename T>
-Vector<T>	Vector<T>::operator*(const float& number) const
+template <typename U>
+Vector<T>	Vector<T>::operator*(const U& number) const
 {
 	Vector<T> result(getDimension());
 	for (size_t i = 0 ; i < getDimension() ; i++)

@@ -43,7 +43,8 @@ class	Vector
 		Vector<T>			operator-(const Vector<U>& vector) const;
 						template <typename U>
 		Vector<T>			operator*(const Vector<U>& vector) const;
-		Vector<T>			operator*(const float& number) const;
+		template <typename U>
+		Vector<T>			operator*(const U& number) const;
 		T&				operator[](const size_t& index);
 		const T&			operator[](const size_t& index) const;
 						template <typename U>
@@ -65,6 +66,9 @@ T	dotProduct(const Vector<Ta>& a, const Vector<Tb>& b);
 
 template <typename Ta, typename Tb>
 inline bool	areOrthogonals(const Vector<Ta>& a, const Vector<Tb>& b) { return dotProduct(a, b) == Complex{}; }
+
+template <typename T>
+std::vector<Vector<Complex>>	orthonormalisation(const std::vector<Vector<T>>& vectors);
 
 #include "../template/Vector/constructors.tpp"
 #include "../template/Vector/getters.tpp"

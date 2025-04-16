@@ -42,3 +42,33 @@ void	Vector<T>::normalise(void)
 	for (auto& data : _vector)
 		data /= getNorm();
 }
+
+static inline Vector<Complex>	computeProj(const Vector<Complex>& e, const Vector<Complex>& vector) { return Vector<Complex>(e * dotProduct<Complex>(vector, e)); }
+
+template <typename T>
+std::vector<Vector<Complex>>	orthonormalisation(const std::vector<Vector<T>>& vectors)
+{
+	for (const auto& vector : vectors)
+	{
+		if (vector.getDimension() != vectors[0].getDimension())
+			throw Error("Error: all vectors must be the same dimension");
+	}
+	std::vector<Vector<Complex>> newVectors(vectors.size());
+	for (size_t i = 0 ; i < vectors.size() ; i++)
+		newVectors[i] = Vector<Complex>(vectors[i]);
+	Vector<Complex> e;
+	std::vector<Vector<Complex>> result(newVectors.size());
+	for (size_t i = 0 ; i < newVectors.size() ; i++)
+	{
+		if (i == 0)
+		{
+			e = Vector<Complex>(newVectors[0] * (1 / newVectors[0].getNorm()));
+			result[i] = e;
+			continue;
+		}
+		e = newVectors[i] - computeProj(e, newVectors[i]);
+		e = e * (1 / e.getNorm());
+		result[i] = e;
+	}
+	return result;
+}

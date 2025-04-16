@@ -14,7 +14,7 @@ Vector<T>::Vector(const Vector<U>& vector)
 			if constexpr (std::is_same<T, Complex>::value)
 				_vector[i] = vector[i];
 			else
-				_vector[i] = static_cast<float>(vector[i].getRealPart());
+				_vector[i] = vector[i].getRealPart();
 		}
 		else
 			_vector[i] = static_cast<float>(vector[i]);
