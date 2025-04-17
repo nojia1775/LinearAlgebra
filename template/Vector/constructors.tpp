@@ -30,3 +30,12 @@ Vector<T>::Vector(const Matrix<U>& matrix)
 	_vector = std::vector<T>(matrix.getNbrLines());
 	*this = matrix.getColumn(0);
 }
+
+template <typename T>
+template <typename U>
+Vector<T>::Vector(const std::initializer_list<U>& list)
+{
+	_vector;
+	for (const auto& value : list)
+		_vector.push_back(static_cast<T>(value));
+}
