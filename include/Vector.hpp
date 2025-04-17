@@ -65,10 +65,10 @@ template <typename T, typename Ta, typename Tb>
 T	dotProduct(const Vector<Ta>& a, const Vector<Tb>& b);
 
 template <typename Ta, typename Tb>
-inline bool	areOrthogonals(const Vector<Ta>& a, const Vector<Tb>& b) { return dotProduct(a, b) == Complex{}; }
+inline bool	areOrthogonals(const Vector<Ta>& a, const Vector<Tb>& b) { return dotProduct<Complex>(a, b) == Complex{}; }
 
 template <typename T>
-std::vector<Vector<Complex>>	orthonormalisation(const std::vector<Vector<T>>& vectors);
+std::vector<Vector<Complex>>	orthonormalize(const std::vector<Vector<T>>& vectors);
 
 #include "../template/Vector/constructors.tpp"
 #include "../template/Vector/getters.tpp"

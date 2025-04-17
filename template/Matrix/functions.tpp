@@ -109,7 +109,7 @@ bool	Matrix<T>::isUpperTriangle(void) const
 	{
 		for (size_t j = 0 ; j < getNbrColumns() ; j++)
 		{
-			if (i > j && (_matrix[i][j] < -1e-5 || _matrix[i][j] > 1e-5))
+			if (i > j && (_matrix[i][j] < -1e-10 || _matrix[i][j] > 1e-10))
 				return false;
 		}
 	}
@@ -170,10 +170,10 @@ std::vector<Matrix<Complex>>	Matrix<T>::QR(void) const
 	if (!isSquare())
 		throw Error("Error: matrix must be square");
 	std::vector<Matrix<Complex>> qr(2, Matrix<Complex>(getNbrColumns(), getNbrColumns()));
-	std::vector<Vector<T>> columns(getNbrColumns());
+	std::vector<Vector<Complex>> columns(getNbrColumns());
 	for (size_t i = 0 ; i < getNbrColumns() ; i++)
-		columns[i] = getColumn(i);
-	std::vector<Vector<Complex>> vectors(orthonormalisation(columns));
+		columns[i] = Vector<Complex>(getColumn(i));
+	std::vector<Vector<Complex>> vectors(orthonormalize(columns));
 	for (size_t i = 0 ; i < vectors.size() ; i++)
 	{
 		for (size_t j = 0 ; j < vectors[0].getDimension() ; j++)

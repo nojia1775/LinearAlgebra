@@ -46,29 +46,28 @@ void	Vector<T>::normalise(void)
 static inline Vector<Complex>	computeProj(const Vector<Complex>& e, const Vector<Complex>& vector) { return Vector<Complex>(e * dotProduct<Complex>(vector, e)); }
 
 template <typename T>
-std::vector<Vector<Complex>>	orthonormalisation(const std::vector<Vector<T>>& vectors)
+std::vector<Vector<Complex>>	orthonormalize(const std::vector<Vector<T>>& vectors)
 {
 	for (const auto& vector : vectors)
 	{
 		if (vector.getDimension() != vectors[0].getDimension())
 			throw Error("Error: all vectors must be the same dimension");
+		
 	}
 	std::vector<Vector<Complex>> newVectors(vectors.size());
+	std::vector<Vector<Complex>> result;
 	for (size_t i = 0 ; i < vectors.size() ; i++)
-		newVectors[i] = Vector<Complex>(vectors[i]);
-	Vector<Complex> e;
-	std::vector<Vector<Complex>> result(newVectors.size());
-	for (size_t i = 0 ; i < newVectors.size() ; i++)
 	{
-		if (i == 0)
-		{
-			e = Vector<Complex>(newVectors[0] * (1 / newVectors[0].getNorm()));
-			result[i] = e;
+		if (vectors[i].getNorm() < 1e-10)
 			continue;
-		}
-		e = newVectors[i] - computeProj(e, newVectors[i]);
-		e = e * (1 / e.getNorm());
-		result[i] = e;
+		newVectors[i] = Vector<Complex>(vectors[i]).getNormalised();
+	}
+	result.push_back(newVectors[0]);
+	for (size_t i = 1 ; i < newVectors.size() ; i++)
+	{
+		for (size_t j = 0 ; j < result.size() ; j++)
+			newVectors[i] = newVectors[i] - computeProj(result[j], newVectors[i]);
+		result.push_back(newVectors[i]);
 	}
 	return result;
 }
