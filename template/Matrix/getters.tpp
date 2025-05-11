@@ -162,3 +162,20 @@ std::vector<Complex>	Matrix<T>::getEigenValues(void) const
 		eigenValues.push_back(A[i][i]);
 	return eigenValues;
 }
+
+template <typename T>
+std::vector<Vector<Complex>>	Matrix<T>::getEigenVectors(void) const
+{
+	if (getNbrColumns() != 2)
+		throw Error("Error: EigenVectors unavailable for now");
+	std::vector<Vector<Complex>> eigenVectors;
+	std::vector<Complex> eigenValues = getEigenValues();
+	for (const auto& eigenValue : eigenValues)
+	{
+		Vector<Complex> eigenVector(2);
+		eigenVector[0] = Complex(-_matrix[0][1]) / (Complex(_matrix[0][0]) - eigenValue);
+		eigenVector[1] = 1;
+		eigenVectors.push_back(eigenVector.getNormalised());
+	}
+	return eigenVectors;
+}

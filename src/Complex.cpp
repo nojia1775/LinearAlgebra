@@ -73,7 +73,7 @@ std::ostream&	operator<<(std::ostream& o, const Complex& complex)
 		if (complex.getImaginaryPart() > 0)
 			o << " + " << complex.getImaginaryPart() << "i";
 		else if (complex.getImaginaryPart() < 0)
-			o << " - " << -complex.getImaginaryPart() << "i";
+			o << " - " << -complex.getImaginaryPart() << "i"; 
 	}
 	else
 	{
