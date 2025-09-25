@@ -15,7 +15,7 @@ class	IdentityMatrix : public Matrix<T>
 		inline			IdentityMatrix(const IdentityMatrix<T>& identityMatrix) : Matrix<float>(identityMatrix), _dimension(identityMatrix._dimension) {}
 		IdentityMatrix<T>&		operator=(const IdentityMatrix<T>& IdentityMatrix);
 
-		inline const size_t&	getDimension(void) const { return _dimension; }
+		inline const size_t&	dimension(void) const { return _dimension; }
 };
 
 #include "../template/IdentityMatrix.tpp"

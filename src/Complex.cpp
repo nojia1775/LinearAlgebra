@@ -22,7 +22,7 @@ Complex	Complex::operator*(const Complex& complex) const
 Complex	Complex::operator/(const Complex& complex) const
 {
 	if (complex == 0)
-		throw Error("Error: division by 0 undefine");
+		throw Error("Error : division by 0 is undefined");
 	Complex a, b;
 	a = *this * complex.getConjugate();
 	b = complex * complex.getConjugate();
@@ -33,7 +33,7 @@ Complex	Complex::operator/(const Complex& complex) const
 Complex	Complex::operator/(const float& number) const
 {
 	if (number == 0)
-		throw Error("Error: division by 0 undefine");
+		throw Error("Error : division by 0 is undefined");
 	Complex result(_real / number, _imaginary / number);
 	return result;
 }

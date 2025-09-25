@@ -16,5 +16,5 @@ class	DiffMatrix : public Matrix<float>
 		DiffMatrix&		operator=(const DiffMatrix& diffMatrix);
 		inline DiffMatrix&	operator=(const Matrix<float>& matrix) { Matrix<float>::operator=(matrix); return *this; }
 
-		inline const size_t&	getDimension(void) const { return _dimension; }
+		inline const size_t&	dimension(void) const { return _dimension; }
 };

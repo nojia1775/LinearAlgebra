@@ -5,6 +5,8 @@ template <typename T>
 template <typename U>
 Matrix<T>&	Matrix<T>::operator=(const Matrix<U>& matrix)
 {
+	if (empty())
+		throw Error("Error: matrix is empty");
 	if (reinterpret_cast<const void *>(this) != reinterpret_cast<const void *>(&matrix))
 	{
 		_nbrLines = matrix.getNbrLines();
@@ -33,9 +35,11 @@ template <typename T>
 template <typename U>
 Matrix<T>&	Matrix<T>::operator=(const std::initializer_list<std::initializer_list<U>>& list)
 {
+	if (empty())
+		throw Error("Error: matrix is empty");
 	for (const auto data : list)
 		if (data.size() != list[0].size())
-			throw Error("Error: initializers have to be the same size");
+			throw Error("Error : initializers must have the same dimensions");
 	_nbrLines = list.size();
 	_nbrColumns = list.begin()->size();
 	_matrix = std::vector<std::vector<T>>(_nbrLines, std::vector<T>(_nbrColumns));
@@ -65,9 +69,11 @@ template <typename T>
 template <typename U>
 Matrix<T>&	Matrix<T>::operator=(const std::vector<std::vector<U>>& vector)
 {
+	if (empty())
+		throw Error("Error: matrix is empty");
 	for (const auto data : vector)
 		if (data.size() != vector[0].size())
-			throw Error("Error: vectors have to be the same dimension");
+			throw Error("Error : vectors must have the same dimensions");
 	_nbrLines = vector.size();
 	_nbrColumns = vector[0].size();
 	_matrix = std::vector<std::vector<T>>(_nbrLines, std::vector<T>(_nbrColumns));
@@ -93,7 +99,11 @@ template <typename T>
 template <typename U>
 Matrix<T>&	Matrix<T>::operator=(const Vector<U>& vector)
 {
-	_nbrLines = vector.getDimension();
+	if (empty())
+		throw Error("Error: matrix is empty");
+	if (vector.empty())
+		throw Error("Error: vector is empty");
+	_nbrLines = vector.dimension();
 	_nbrColumns = 1;
 	_matrix = std::vector<std::vector<T>>(_nbrLines, std::vector<T>(_nbrColumns));
 	for (size_t i = 0 ; i < _nbrLines ; i++)
@@ -116,16 +126,20 @@ Matrix<T>&	Matrix<T>::operator=(const Vector<U>& vector)
 template <typename T>
 std::vector<T>&	Matrix<T>::operator[](const size_t& index)
 {
+	if (empty())
+		throw Error("Error: matrix is empty");
 	if (index > _nbrLines - 1)
-		throw Error("Error: index out of range");
+		throw Error("Error : index out of range");
 	return _matrix[index];
 }
 
 template <typename T>
 const std::vector<T>&	Matrix<T>::operator[](const size_t& index) const
 {
+	if (empty())
+		throw Error("Error: matrix is empty");
 	if (index > _nbrLines - 1)
-		throw Error("Error: index out of range");
+		throw Error("Error : index out of range");
 	return _matrix[index];
 }
 
@@ -133,6 +147,8 @@ template <typename T>
 template <typename U>
 Matrix<T>	Matrix<T>::operator*(const Matrix<U>& matrix) const
 {
+	if (empty() || matrix.empty())
+		throw Error("Error: matrix is empty");
 	Matrix<T> result(_nbrLines, matrix.getNbrColumns());
 	for (size_t i = 0 ; i < result._nbrLines ; i++)
 	{
@@ -145,6 +161,8 @@ Matrix<T>	Matrix<T>::operator*(const Matrix<U>& matrix) const
 template <typename T>
 Matrix<T>&	Matrix<T>::operator*=(const float& number)
 {
+	if (empty())
+		throw Error("Error: matrix is empty");
 	for (auto& datas : _matrix)
 	{
 		for (auto& data : datas)
@@ -156,6 +174,8 @@ Matrix<T>&	Matrix<T>::operator*=(const float& number)
 template <typename T>
 Matrix<T>	Matrix<T>::operator*(const float& number) const
 {
+	if (empty())
+		throw Error("Error: matrix is empty");
 	Matrix result(_nbrLines, _nbrColumns);
 	for (size_t i = 0 ; i < _nbrLines ; i++)
 	{
@@ -168,8 +188,10 @@ Matrix<T>	Matrix<T>::operator*(const float& number) const
 template <typename T>
 Matrix<T>	Matrix<T>::operator/(const float& number) const
 {
+	if (empty())
+		throw Error("Error: matrix is empty");
 	if (number == 0)
-		throw Error("Error: division by 0 undefine");
+		throw Error("Error : division by 0 is undefined");
 	return Matrix<T>(*this) * (1 / number);
 }
 
@@ -177,8 +199,12 @@ template <typename T>
 template <typename U>
 Vector<U>	Matrix<T>::operator*(const Vector<U>& vector) const
 {
-	if (_nbrColumns != vector.getDimension())
-		throw Error("Error: vector.dimension has to be the same as matrix.column");
+	if (empty())
+		throw Error("Error: matrix is empty");
+	if (vector.empty())
+		throw Error("Error: vector is empty");
+	if (_nbrColumns != vector.dimension())
+		throw Error("Error : vector.dimension must be equal to matrice.column");
 	return Vector<U>(*this * Matrix<U>(vector));
 }
 
@@ -186,6 +212,8 @@ template <typename T>
 template <typename U>
 bool	Matrix<T>::operator==(const Matrix<U>& matrix) const
 {
+	if (empty() || matrix.empty())
+		throw Error("Error: matrix is empty");
 	if (_nbrLines != matrix.getNbrLines() || _nbrColumns != matrix.getNbrColumns())
 		return false;
 	for (size_t i = 0 ; i < getNbrLines() ; i++)
@@ -197,4 +225,52 @@ bool	Matrix<T>::operator==(const Matrix<U>& matrix) const
 		}
 	}
 	return true;
+}
+
+template <typename T>
+template <typename U>
+Matrix<T>	Matrix<T>::operator+(const Matrix<U>& matrix) const
+{
+	if (empty() || matrix.empty())
+		throw Error("Error: matrix is empty");
+	if (_nbrColumns != matrix.getNbrColumns() || _nbrLines != matrix.getNbrLines())
+		throw Error("Error : matrices must have the same dimensions");
+	Matrix<T> result(_nbrLines, matrix.getNbrColumns());
+	for (size_t i = 0 ; i < result._nbrLines ; i++)
+	{
+		for (size_t j = 0 ; j < result._nbrColumns ; j++)
+			result[i][j] = _matrix[i][j] + matrix[i][j];
+	}
+	return result;
+}
+
+template <typename T>
+template <typename U>
+Matrix<T>	Matrix<T>::operator-(const Matrix<U>& matrix) const
+{
+	if (empty() || matrix.empty())
+		throw Error("Error: matrix is empty");
+	if (_nbrColumns != matrix.getNbrColumns() || _nbrLines != matrix.getNbrLines())
+		throw Error("Error : matrices must have the same dimensions");
+	Matrix<T> result(_nbrLines, matrix.getNbrColumns());
+	for (size_t i = 0 ; i < result._nbrLines ; i++)
+	{
+		for (size_t j = 0 ; j < result._nbrColumns ; j++)
+			result[i][j] = _matrix[i][j] - matrix[i][j];
+	}
+	return result;
+}
+
+template <typename T>
+Matrix<Complex>	Matrix<T>::operator*(const Complex& complex) const
+{
+	if (empty())
+		throw Error("Error: matrix is empty");
+	Matrix<Complex> result(_nbrLines, _nbrColumns);
+	for (size_t i = 0 ; i < _nbrLines ; i++)
+	{
+		for (size_t j = 0 ; j < _nbrColumns ; j++)
+			result[i][j] = complex * _matrix[i][j];
+	}
+	return result;
 }

@@ -4,16 +4,20 @@
 template <typename T>
 Vector<T>	Matrix<T>::getLine(const size_t& index) const
 {
+	if (empty())
+		throw Error("Error: matrix is empty");
 	if (index > getNbrLines() - 1)
-		throw Error("Error: index out of range");
+		throw Error("Error : index out of range");
 	return Vector<T>(_matrix[index]);
 }
 
 template <typename T>
 Vector<T>	Matrix<T>::getColumn(const size_t& index) const
 {
+	if (empty())
+		throw Error("Error: matrix is empty");
 	if (index > getNbrColumns() - 1)
-		throw Error("Error: index out of range");
+		throw Error("Error : index out of range");
 	Vector<T> result(getNbrLines());
 	for (size_t i = 0 ; i < getNbrLines() ; i++)
 		result[i] = _matrix[i][index];
@@ -23,6 +27,8 @@ Vector<T>	Matrix<T>::getColumn(const size_t& index) const
 template <typename T>
 static T	determinant3(const Matrix<T>& matrix)
 {
+	if (matrix.empty())
+		throw Error("Error: matrix is empty");
 	T result{};
 	size_t j = 0;
 	size_t k = 1;
@@ -37,16 +43,21 @@ static T	determinant3(const Matrix<T>& matrix)
 	return result;
 }
 
+size_t swap = 0;
+
 template <typename T>
-T	Matrix<T>::getDeterminant(void) const
+T	Matrix<T>::determinant(void) const
 {
-	if (!isSquare())
-		throw Error("Error: matrix has to be square");
-	if (isLowerTriangle() || isUpperTriangle())
+	if (empty())
+		throw Error("Error: matrix is empty");
+	if (!square())
+		throw Error("Error : matrix must be square");
+	if (lowerTriangle() || upperTriangle())
 	{
-		T result(1);
+		T result = pow(-1, swap);
 		for (size_t i = 0 ; i < getNbrColumns() ; i++)
 			result *= _matrix[i][i];
+		swap = 0;
 		return result;
 	}
 	if (getNbrColumns() == 1)
@@ -56,35 +67,38 @@ T	Matrix<T>::getDeterminant(void) const
 	else if (getNbrLines() == 3)
 		return determinant3(*this);
 	else
-		return decompLU()[2].getDeterminant();
+		return decompLU(swap)[2].determinant();
 }
 
 template <typename T>
-Matrix<T>	Matrix<T>::getInverse(void) const
+Matrix<T>	Matrix<T>::inverse(void) const
 {
-	if (isInversible() == false)
-		throw Error("Error: this matrix is not inversible");
+	if (empty())
+		throw Error("Error: matrix is empty");
+	if (!square())
+		throw Error("Error: matrix is not square");
+	if (inversible() == false)
+		throw Error("Error : this matrix is not inversible");
 	if (getNbrColumns() == 2)
 	{
 		Matrix<T> result(getNbrLines(), getNbrColumns());
 		result[0][0] = _matrix[1][1];
 		result[1][1] = _matrix[0][0];
-		result[0][1] = -_matrix[0][1];
-		result[1][0] = -_matrix[1][0];
-		return result * (1 / getDeterminant());
+		result[0][1] = _matrix[0][1] * -1;
+		result[1][0] = _matrix[1][0] * -1;
+		return result * (Complex(1) / determinant());
 	}
 	else
-		return getAdjugate() * (1 / getDeterminant());
-	return *this;
+		return adjugate() * (Complex(1) / determinant());
 }
 
 template <typename T>
-Matrix<T>	Matrix<T>::getTranspose(void) const
+Matrix<T>	Matrix<T>::transpose(void) const
 {
-	if (!isSquare())
-		throw Error("Error: matrix must be square");
-	Matrix<T> result(*this);
-	for (size_t i = 0 ; i < getNbrColumns() ; i++)
+	if (empty())
+		throw Error("Error: matrix is empty");
+	Matrix<T> result(getNbrColumns(), getNbrLines());
+	for (size_t i = 0 ; i < getNbrLines() ; i++)
 	{
 		for (size_t j = 0 ; j < getNbrColumns() ; j++)
 			result[j][i] = _matrix[i][j];
@@ -93,10 +107,12 @@ Matrix<T>	Matrix<T>::getTranspose(void) const
 }
 
 template <typename T>
-Matrix<T>	Matrix<T>::getComatrix(void) const
+Matrix<T>	Matrix<T>::comatrix(void) const
 {
-	if (!isSquare())
-		throw Error("Error: matrix must be square");
+	if (empty())
+		throw Error("Error: matrix is empty");
+	if (!square())
+		throw Error("Error : matrix must be square");
 	if (getNbrColumns() == 1)
 		return *this;
 	Matrix<T> com(getNbrColumns(), getNbrColumns());
@@ -117,17 +133,19 @@ Matrix<T>	Matrix<T>::getComatrix(void) const
 					}
 				}
 			}
-			com[i][j] = pow(-1, i + j) * lowMatrix.getDeterminant();
+			com[i][j] = lowMatrix.determinant() * pow(-1, i + j);
 		}
 	}
 	return com;
 }
 
 template <typename T>
-std::vector<Complex>	Matrix<T>::getEigenValues(void) const
+std::vector<Complex>	Matrix<T>::eigenValues(void) const
 {
-	if (isSquare() == false)
-		throw Error("Error: matrix must be square");
+	if (empty())
+		throw Error("Error: matrix is empty");
+	if (square() == false)
+		throw Error("Error : matrix must be square");
 	std::vector<Complex> eigenValues;
 	if (getNbrColumns() == 2)
 	{
@@ -151,7 +169,7 @@ std::vector<Complex>	Matrix<T>::getEigenValues(void) const
 	}
 	std::vector<Matrix<Complex>> qr(QR());
 	Matrix<Complex> A(qr[1] * qr[0]);
-	while (!A.isUpperTriangle())
+	while (!A.upperTriangle())
 	{
 		std::cout << areOrthogonals(A.getColumn(0), A.getColumn(1)) << std::endl;
 		A.display();
@@ -164,18 +182,20 @@ std::vector<Complex>	Matrix<T>::getEigenValues(void) const
 }
 
 template <typename T>
-std::vector<Vector<Complex>>	Matrix<T>::getEigenVectors(void) const
+std::vector<Vector<Complex>>	Matrix<T>::eigenVectors(void) const
 {
+	if (empty())
+		throw Error("Error: matrix is empty");
 	if (getNbrColumns() != 2)
-		throw Error("Error: EigenVectors unavailable for now");
+		throw Error("Error : eigen vectors unavailable for now");
 	std::vector<Vector<Complex>> eigenVectors;
-	std::vector<Complex> eigenValues = getEigenValues();
+	std::vector<Complex> eigenValues = eigenValues();
 	for (const auto& eigenValue : eigenValues)
 	{
 		Vector<Complex> eigenVector(2);
 		eigenVector[0] = Complex(-_matrix[0][1]) / (Complex(_matrix[0][0]) - eigenValue);
 		eigenVector[1] = 1;
-		eigenVectors.push_back(eigenVector.getNormalised());
+		eigenVectors.push_back(eigenVector.normalised());
 	}
 	return eigenVectors;
 }

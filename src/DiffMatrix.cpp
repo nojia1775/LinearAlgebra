@@ -17,7 +17,7 @@ DiffMatrix&	DiffMatrix::operator=(const DiffMatrix& diffMatrix)
 	if (this != &diffMatrix)
 	{
 		if (_dimension != diffMatrix._dimension)
-			throw Error("Error: DiffMatrix have to be the same dimension");
+			throw Error("Error : matrices must have the same dimensions");
 		_matrix = diffMatrix._matrix;
 	}
 	return *this;

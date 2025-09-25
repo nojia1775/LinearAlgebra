@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <type_traits>
 
 class Error;
 
@@ -17,7 +18,7 @@ class	Complex
 
 				Complex(const float& real, const float& imaginary) : _real(real), _imaginary(imaginary) {}
 				Complex(const Complex& complex) : _real(complex._real), _imaginary(complex._imaginary) {}
-				template <typename T>
+				template <typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
 				Complex(const T& number) : _real(static_cast<float>(number)), _imaginary(0) {}
 
 		const float&	getImaginaryPart(void) const { return _imaginary; }

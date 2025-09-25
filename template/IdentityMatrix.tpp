@@ -21,7 +21,7 @@ IdentityMatrix<T>&	IdentityMatrix<T>::operator=(const IdentityMatrix& identityMa
 	if (this != &identityMatrix)
 	{
 		if (_dimension == identityMatrix._dimension)
-			throw Error("Error: identity matrix have to be the same dimension");
+			throw Error("Error : matrices must have the same dimensions");
 		this->_matrix = identityMatrix._matrix;
 	}
 	return *this;
