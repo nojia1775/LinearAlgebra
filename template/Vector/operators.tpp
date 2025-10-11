@@ -132,14 +132,12 @@ template <typename T>
 template <typename U>
 Vector<T>&	Vector<T>::operator=(const Matrix<U>& matrix)
 {
-	if (empty())
-		throw Error("Error: vector is empty");
 	if (matrix.empty())
 		throw Error("Error: matrix is empty");
 	if (matrix.getNbrColumns() != 1)
 		throw Error("Error : the number of column of the matrix must be 1");
 	_vector = std::vector<T>(matrix.getNbrLines());
 	for (size_t i = 0 ; i < matrix.getNbrLines() ; i++)
-		_vector[i] = matrix[0][i];
+		_vector[i] = matrix[i][0];
 	return *this;
 }

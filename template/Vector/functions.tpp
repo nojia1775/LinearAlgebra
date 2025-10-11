@@ -161,3 +161,48 @@ Vector<T>	cross_product(const Vector<T>& a, const Vector<T>& b)
 		throw Error("Error: vectors' dimension must be 3");
 	return Vector<T>({a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]});
 }
+
+template <typename T>
+float	Vector<T>::norm(void) const
+{
+	if (empty())
+		throw Error("Error: vector is empty");
+	Vector<Complex> Cvector = *this;
+	float norm = 0;
+	for (size_t i = 0 ; i < dimension() ; i++)
+		norm += pow(Cvector[i].getModule(), 2);
+	return sqrt(norm);
+}
+
+template <typename T>
+Vector<T>	Vector<T>::normalised(void) const
+{
+	if (empty())
+		throw Error("Error: vector is empty");
+	Vector<T> result(dimension());
+	for (size_t i = 0 ; i < dimension() ; i++)
+		result[i] = _vector[i] / norm();
+	return result;
+}
+
+template <typename T>
+Vector<T>	Vector<T>::apply(T (*f)(const T&)) const
+{
+	if (f == NULL)
+		return *this;
+	Vector<T> result(*this);
+	for (size_t i = 0 ; i < result.dimension() ; i++)
+		result[i] = f(result[i]);
+	return result;
+}
+
+template <typename T>
+Vector<T>	Vector<T>::hadamard(const Vector<T>& vector) const
+{
+	if (dimension() != vector.dimension())
+		throw Error("Error: vectors must be the same dimension");
+	Vector<T> result(*this);
+	for (size_t i = 0 ; i < result.dimension() ; i++)
+		result[i] *= vector[i];
+	return result;
+}

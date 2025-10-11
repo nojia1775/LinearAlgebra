@@ -99,8 +99,6 @@ template <typename T>
 template <typename U>
 Matrix<T>&	Matrix<T>::operator=(const Vector<U>& vector)
 {
-	if (empty())
-		throw Error("Error: matrix is empty");
 	if (vector.empty())
 		throw Error("Error: vector is empty");
 	_nbrLines = vector.dimension();
@@ -121,6 +119,7 @@ Matrix<T>&	Matrix<T>::operator=(const Vector<U>& vector)
 				_matrix[i][j] = static_cast<float>(vector[i]);
 		}
 	}
+	return *this;
 }
 
 template <typename T>
@@ -175,7 +174,7 @@ template <typename T>
 Matrix<T>	Matrix<T>::operator*(const float& number) const
 {
 	if (empty())
-		throw Error("Error: matrix is empty");
+		throw Error("Error: matrix is empty 9");
 	Matrix result(_nbrLines, _nbrColumns);
 	for (size_t i = 0 ; i < _nbrLines ; i++)
 	{
@@ -197,15 +196,15 @@ Matrix<T>	Matrix<T>::operator/(const float& number) const
 
 template <typename T>
 template <typename U>
-Vector<U>	Matrix<T>::operator*(const Vector<U>& vector) const
+Matrix<U>	Matrix<T>::operator*(const Vector<U>& vector) const
 {
 	if (empty())
 		throw Error("Error: matrix is empty");
 	if (vector.empty())
 		throw Error("Error: vector is empty");
-	if (_nbrColumns != vector.dimension())
-		throw Error("Error : vector.dimension must be equal to matrice.column");
-	return Vector<U>(*this * Matrix<U>(vector));
+	// if (_nbrColumns != vector.dimension())
+	// 	throw Error("Error : vector.dimension must be equal to matrice.column");
+	return Matrix<U>(*this * Matrix<U>(vector));
 }
 
 template <typename T>
@@ -231,8 +230,10 @@ template <typename T>
 template <typename U>
 Matrix<T>	Matrix<T>::operator+(const Matrix<U>& matrix) const
 {
-	if (empty() || matrix.empty())
+	if (matrix.empty())
 		throw Error("Error: matrix is empty");
+	if (empty())
+		return matrix;
 	if (_nbrColumns != matrix.getNbrColumns() || _nbrLines != matrix.getNbrLines())
 		throw Error("Error : matrices must have the same dimensions");
 	Matrix<T> result(_nbrLines, matrix.getNbrColumns());
@@ -248,8 +249,10 @@ template <typename T>
 template <typename U>
 Matrix<T>	Matrix<T>::operator-(const Matrix<U>& matrix) const
 {
-	if (empty() || matrix.empty())
+	if (matrix.empty())
 		throw Error("Error: matrix is empty");
+	if (empty())
+		return matrix * -1;
 	if (_nbrColumns != matrix.getNbrColumns() || _nbrLines != matrix.getNbrLines())
 		throw Error("Error : matrices must have the same dimensions");
 	Matrix<T> result(_nbrLines, matrix.getNbrColumns());

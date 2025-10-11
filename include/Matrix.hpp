@@ -19,6 +19,7 @@ class	Matrix
 	
 	public:
 		virtual				~Matrix(void) {}
+						Matrix(void) : _matrix(), _nbrLines(0), _nbrColumns(0) {}
 
 						Matrix(const size_t& nbrLines, const size_t& nbrColumns) : _matrix(vector2(nbrLines, std::vector<T>(nbrColumns, T{}))), _nbrLines(nbrLines), _nbrColumns(nbrColumns) {}
 						template <typename U>
@@ -50,7 +51,7 @@ class	Matrix
 		Matrix<T>			operator*(const float& number) const;
 		Matrix<T>			operator/(const float& number) const;
 						template <typename U>
-		Vector<U>			operator*(const Vector<U>& vector) const;
+		Matrix<U>			operator*(const Vector<U>& vector) const;
 		Matrix<Complex>			operator*(const Complex& complex) const;
 		Matrix<T>&			operator*=(const float& number);
 						template <typename U>
@@ -86,6 +87,10 @@ class	Matrix
 		T				trace(void) const;
 		Matrix<T>			row_echelon(void) const;
 		size_t				rank(void) const;
+		Matrix<T>			sumCols(void) const;
+		Matrix<T>			sumLines(void) const;
+		Matrix<T>			apply(T (*f)(const T&)) const;
+		Matrix<T>			hadamard(const Matrix<T>& matrix) const;
 };
 
 template <typename T>
